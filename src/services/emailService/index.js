@@ -39,4 +39,67 @@ export const sendVerificationEmail = async (to, token) => {
 	await sendEmail(to, subject, html);
 };
 
-export default { sendEmail, sendResetPasswordEmail, sendVerificationEmail };
+// DesignFlow Studio specific email functions
+export const sendWelcomeEmail = async (user) => {
+	const subject = 'Welcome to DesignFlow Studio!';
+	const html = template.welcomeEmail(user, config.APP_NAME);
+	await sendEmail(user.email, subject, html);
+};
+
+export const sendEstimateEmail = async (estimate, client) => {
+	const subject = `Your Estimate: ${estimate.title}`;
+	const html = template.estimateEmail(estimate, client, config.APP_NAME);
+	await sendEmail(client.email, subject, html);
+};
+
+export const sendProjectUpdateEmail = async (project, client, updateType, details) => {
+	const subject = `Project Update: ${project.name}`;
+	const html = template.projectUpdateEmail(project, client, updateType, details, config.APP_NAME);
+	await sendEmail(client.email, subject, html);
+};
+
+export const sendMoodboardEmail = async (moodboard, client) => {
+	const subject = `New Moodboard: ${moodboard.title}`;
+	const html = template.moodboardEmail(moodboard, client, config.APP_NAME);
+	await sendEmail(client.email, subject, html);
+};
+
+export const sendAppointmentReminderEmail = async (client, appointment) => {
+	const subject = `Appointment Reminder - ${appointment.date}`;
+	const html = template.appointmentReminderEmail(client, appointment, config.APP_NAME);
+	await sendEmail(client.email, subject, html);
+};
+
+export const sendEmailWithAttachment = async (to, subject, html, attachments = []) => {
+	const msg = { 
+		from: `${config.APP_NAME} <${config.EMAIL_FROM}>`, 
+		to, 
+		subject, 
+		html,
+		attachments
+	};
+	await transport.sendMail(msg);
+};
+
+export const isServiceAvailable = async () => {
+	try {
+		await transport.verify();
+		return true;
+	} catch (error) {
+		logger.error('Email service unavailable:', error);
+		return false;
+	}
+};
+
+export default { 
+	sendEmail, 
+	sendResetPasswordEmail, 
+	sendVerificationEmail,
+	sendWelcomeEmail,
+	sendEstimateEmail,
+	sendProjectUpdateEmail,
+	sendMoodboardEmail,
+	sendAppointmentReminderEmail,
+	sendEmailWithAttachment,
+	isServiceAvailable
+};

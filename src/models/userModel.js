@@ -45,7 +45,17 @@ const userSchema = mongoose.Schema(
 				type: mongoose.SchemaTypes.ObjectId,
 				ref: 'roles'
 			}
-		]
+		],
+		googleId: {
+			type: String,
+			unique: true,
+			sparse: true
+		},
+		authProvider: {
+			type: String,
+			enum: ['local', 'google'],
+			default: 'local'
+		}
 	},
 	{
 		timestamps: true,

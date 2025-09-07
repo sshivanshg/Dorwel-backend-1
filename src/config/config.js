@@ -27,7 +27,39 @@ const envValidate = Joi.object()
 		EMAIL_FROM: Joi.string().allow('').empty(''),
 
 		FRONTEND_URL: Joi.string().allow('').empty('').default('http://localhost:777'),
-		IMAGE_URL: Joi.string().allow('').empty('').default('http://localhost:666/images')
+		IMAGE_URL: Joi.string().allow('').empty('').default('http://localhost:666/images'),
+
+		// Google OAuth
+		GOOGLE_CLIENT_ID: Joi.string().allow('').empty(''),
+		GOOGLE_CLIENT_SECRET: Joi.string().allow('').empty(''),
+		GOOGLE_REDIRECT_URI: Joi.string().allow('').empty('').default('http://localhost:666/api/v1/auth/google/callback'),
+
+		// Twilio (WhatsApp/SMS)
+		TWILIO_ACCOUNT_SID: Joi.string().allow('').empty(''),
+		TWILIO_AUTH_TOKEN: Joi.string().allow('').empty(''),
+		TWILIO_PHONE_NUMBER: Joi.string().allow('').empty(''),
+		TWILIO_WHATSAPP_NUMBER: Joi.string().allow('').empty(''),
+
+		// OpenAI
+		OPENAI_API_KEY: Joi.string().allow('').empty(''),
+		OPENAI_MODEL: Joi.string().allow('').empty('').default('gpt-4'),
+		OPENAI_MAX_TOKENS: Joi.number().allow('').empty('').default(2000),
+
+		// PDF Generation
+		PDF_STORAGE_PATH: Joi.string().allow('').empty('').default('./storage/pdfs'),
+		PDF_PUBLIC_URL: Joi.string().allow('').empty('').default('http://localhost:666/pdfs'),
+
+		// File Upload
+		MAX_FILE_SIZE: Joi.number().allow('').empty('').default(10485760), // 10MB
+		ALLOWED_FILE_TYPES: Joi.string().allow('').empty('').default('image/jpeg,image/png,image/gif,image/webp,application/pdf'),
+
+		// Rate Limiting
+		RATE_LIMIT_WINDOW_MS: Joi.number().allow('').empty('').default(900000), // 15 minutes
+		RATE_LIMIT_MAX_REQUESTS: Joi.number().allow('').empty('').default(100),
+
+		// JWT Refresh Token
+		JWT_REFRESH_TOKEN_SECRET: Joi.string().allow('').empty(''),
+		JWT_REFRESH_TOKEN_EXPIRATION_DAYS: Joi.number().allow('').empty('').default(7)
 	})
 	.unknown();
 
@@ -68,6 +100,38 @@ export default {
 	FRONTEND_URL: env.FRONTEND_URL,
 
 	IMAGE_URL: env.IMAGE_URL,
+
+	// Google OAuth
+	GOOGLE_CLIENT_ID: env.GOOGLE_CLIENT_ID,
+	GOOGLE_CLIENT_SECRET: env.GOOGLE_CLIENT_SECRET,
+	GOOGLE_REDIRECT_URI: env.GOOGLE_REDIRECT_URI,
+
+	// Twilio (WhatsApp/SMS)
+	TWILIO_ACCOUNT_SID: env.TWILIO_ACCOUNT_SID,
+	TWILIO_AUTH_TOKEN: env.TWILIO_AUTH_TOKEN,
+	TWILIO_PHONE_NUMBER: env.TWILIO_PHONE_NUMBER,
+	TWILIO_WHATSAPP_NUMBER: env.TWILIO_WHATSAPP_NUMBER,
+
+	// OpenAI
+	OPENAI_API_KEY: env.OPENAI_API_KEY,
+	OPENAI_MODEL: env.OPENAI_MODEL,
+	OPENAI_MAX_TOKENS: env.OPENAI_MAX_TOKENS,
+
+	// PDF Generation
+	PDF_STORAGE_PATH: env.PDF_STORAGE_PATH,
+	PDF_PUBLIC_URL: env.PDF_PUBLIC_URL,
+
+	// File Upload
+	MAX_FILE_SIZE: env.MAX_FILE_SIZE,
+	ALLOWED_FILE_TYPES: env.ALLOWED_FILE_TYPES.split(','),
+
+	// Rate Limiting
+	RATE_LIMIT_WINDOW_MS: env.RATE_LIMIT_WINDOW_MS,
+	RATE_LIMIT_MAX_REQUESTS: env.RATE_LIMIT_MAX_REQUESTS,
+
+	// JWT Refresh Token
+	JWT_REFRESH_TOKEN_SECRET: env.JWT_REFRESH_TOKEN_SECRET,
+	JWT_REFRESH_TOKEN_EXPIRATION_DAYS: env.JWT_REFRESH_TOKEN_EXPIRATION_DAYS,
 
 	TOKEN_TYPES: {
 		REFRESH: 'refresh',

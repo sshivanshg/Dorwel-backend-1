@@ -8,6 +8,7 @@ import error from '~/middlewares/error';
 import rateLimiter from '~/middlewares/rateLimiter';
 import config from '~/config/config';
 import morgan from '~/config/morgan';
+import realtimeService from '~/services/realtimeService';
 
 const app = express();
 
@@ -27,5 +28,8 @@ app.use('/api/v1', routes);
 app.use(error.converter);
 app.use(error.notFound);
 app.use(error.handler);
+
+// Initialize real-time service
+app.realtimeService = realtimeService;
 
 export default app;

@@ -45,6 +45,10 @@ const connect = async () => {
 			logger.info('██║░░██║███████║██╔══╝░░');
 			logger.info('██████╔╝╚════██║███████╗');
 			logger.info('╚═════╝░░░░░░╚═╝╚══════╝');
+			
+			// Initialize real-time service
+			app.realtimeService.initialize(server);
+			logger.info('🚀 Real-time service initialized');
 		});
 	} catch (err) {
 		logger.error(`MongoDB connection error: ${err}`);
