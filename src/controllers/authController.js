@@ -8,8 +8,12 @@ import Token from '~/models/tokenModel';
 import Role from '~/models/roleModel';
 
 export const signup = async (req, res) => {
-	const role = await Role.getRoleByName('User');
-	req.body.roles = [role.id];
+	// Prefer a generic 'User' role; fallback to 'Client' if not present in initial data
+	let role = await Role.getRoleByName('User');
+	if (!role) {
+		role = await Role.getRoleByName('Client');
+	}
+	req.body.roles = role ? [role.id] : [];
 	const user = await User.createUser(req.body);
 	const tokens = await tokenService.generateAuthTokens(user);
 	return res.json({

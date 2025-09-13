@@ -1,0 +1,31 @@
+
+> dorwel-backend@1.0.0 dev
+> cross-env NODE_ENV=development nodemon src --exec babel-node
+
+[33m[nodemon] 2.0.20[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): *.*[39m
+[33m[nodemon] watching extensions: js,mjs,json[39m
+[32m[nodemon] starting `babel-node src`[39m
+[32m2025-09-08 15:21:42: info: 🚀 Connecting to MongoDB...[39m
+(node:48166) [MONGOOSE] DeprecationWarning: Mongoose: the `strictQuery` option will be switched back to `false` by default in Mongoose 7. Use `mongoose.set('strictQuery', false);` if you want to prepare for this change. Or use `mongoose.set('strictQuery', true);` to suppress this warning.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[32m2025-09-08 15:21:42: info: 🚀 Connected to MongoDB![39m
+[32m2025-09-08 15:21:42: info: 🚀 MongoDB connection opened![39m
+[32m2025-09-08 15:21:42: info: 🚀 Connected to MongoDB end![39m
+[32m2025-09-08 15:21:42: info: 🚀 Initial MongoDB![39m
+[32m2025-09-08 15:21:42: info: 🚀 Host: http://0.0.0.0:666[39m
+[32m2025-09-08 15:21:42: info: ██████╗░░░██╗██╗███████╗[39m
+[32m2025-09-08 15:21:42: info: ██╔══██╗░██╔╝██║╚════██║[39m
+[32m2025-09-08 15:21:42: info: ██║░░██║██╔╝░██║░░███╔═╝[39m
+[32m2025-09-08 15:21:42: info: ██║░░██║███████║██╔══╝░░[39m
+[32m2025-09-08 15:21:42: info: ██████╔╝╚════██║███████╗[39m
+[32m2025-09-08 15:21:42: info: ╚═════╝░░░░░░╚═╝╚══════╝[39m
+[32m2025-09-08 15:21:42: info: Realtime service initialized[39m
+[32m2025-09-08 15:21:42: info: 🚀 Real-time service initialized[39m
+[33m2025-09-08 15:21:42: warn: Unable to connect to email server[39m
+[35m2025-09-08 15:22:17: http: 127.0.0.1 - - [08/Sep/2025:09:52:17 +0000] "GET /api/v1/services/status HTTP/1.1" - - "-" "curl/8.7.1"[39m
+[35m2025-09-08 15:22:41: http: 127.0.0.1 - - [08/Sep/2025:09:52:41 +0000] "POST /api/v1/auth/signup HTTP/1.1" 200 1145 "-" "curl/8.7.1"[39m
+[35m2025-09-08 15:23:03: http: 127.0.0.1 - - [08/Sep/2025:09:53:03 +0000] "POST /api/v1/auth/signin HTTP/1.1" 200 1145 "-" "curl/8.7.1"[39m
+[35m2025-09-08 15:24:03: http: 127.0.0.1 - - [08/Sep/2025:09:54:03 +0000] "POST /api/v1/auth/signin HTTP/1.1" 200 1135 "-" "curl/8.7.1"[39m
+[35m2025-09-08 15:25:26: http: 127.0.0.1 - - [08/Sep/2025:09:55:26 +0000] "POST /api/v1/clients HTTP/1.1" - - "-" "curl/8.7.1"[39m
