@@ -4,6 +4,7 @@ import toJSON from './plugins/toJSONPlugin';
 import APIError from '~/utils/apiError';
 import httpStatus from 'http-status';
 
+
 const clientSchema = mongoose.Schema(
 	{
 		firstName: {

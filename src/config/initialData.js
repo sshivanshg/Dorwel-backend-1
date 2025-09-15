@@ -255,6 +255,47 @@ async function initialData() {
 				}
 			);
 		}
+
+		// Ensure critical roles always exist (idempotent)
+		// Studio Owner → all permissions; Designer → limited client/project/design/read-update set
+		try {
+			const [designerRole, studioOwnerRole] = await Promise.all([
+				Role.findOne({ name: 'Designer' }),
+				Role.findOne({ name: 'Studio Owner' })
+			]);
+
+			if (!studioOwnerRole) {
+				const allPermissions = await Permission.find();
+				await Role.create({
+					name: 'Studio Owner',
+					description: 'Full access to all features including financial management, user administration, and team management',
+					permissions: allPermissions
+				});
+				logger.info('Seeded missing role: Studio Owner');
+			}
+
+			if (!designerRole) {
+				const clientPermissions = await Permission.find({
+					$or: [
+						{ controller: 'project' },
+						{ controller: 'client' },
+						{ controller: 'design' },
+						{ controller: 'lead' },
+						{ controller: 'estimate' },
+						{ controller: 'moodboard' }
+					],
+					action: { $ne: 'delete' }
+				});
+				await Role.create({
+					name: 'Designer',
+					description: 'Can view and update projects, clients, and designs. Cannot delete records',
+					permissions: clientPermissions
+				});
+				logger.info('Seeded missing role: Designer');
+			}
+		} catch (e) {
+			logger.error(e);
+		}
 		const countUsers = await User.estimatedDocumentCount();
 		if (countUsers === 0) {
 			const roleStudioOwner = await Role.findOne({ name: 'Studio Owner' });
