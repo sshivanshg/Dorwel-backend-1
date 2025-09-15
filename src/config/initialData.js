@@ -109,6 +109,74 @@ async function initialData() {
 				{
 					controller: 'financial',
 					action: 'delete'
+				},
+				// Team management permissions
+				{
+					controller: 'team',
+					action: 'create'
+				},
+				{
+					controller: 'team',
+					action: 'read'
+				},
+				{
+					controller: 'team',
+					action: 'update'
+				},
+				{
+					controller: 'team',
+					action: 'delete'
+				},
+				// Lead management permissions
+				{
+					controller: 'lead',
+					action: 'create'
+				},
+				{
+					controller: 'lead',
+					action: 'read'
+				},
+				{
+					controller: 'lead',
+					action: 'update'
+				},
+				{
+					controller: 'lead',
+					action: 'delete'
+				},
+				// Estimate management permissions
+				{
+					controller: 'estimate',
+					action: 'create'
+				},
+				{
+					controller: 'estimate',
+					action: 'read'
+				},
+				{
+					controller: 'estimate',
+					action: 'update'
+				},
+				{
+					controller: 'estimate',
+					action: 'delete'
+				},
+				// Moodboard management permissions
+				{
+					controller: 'moodboard',
+					action: 'create'
+				},
+				{
+					controller: 'moodboard',
+					action: 'read'
+				},
+				{
+					controller: 'moodboard',
+					action: 'update'
+				},
+				{
+					controller: 'moodboard',
+					action: 'delete'
 				}
 			);
 		}
@@ -119,14 +187,21 @@ async function initialData() {
 				$or: [
 					{ controller: 'project' },
 					{ controller: 'client' },
-					{ controller: 'design' }
+					{ controller: 'design' },
+					{ controller: 'lead' },
+					{ controller: 'estimate' },
+					{ controller: 'moodboard' },
+					{ controller: 'team' }
 				]
 			});
 			const clientPermissions = await Permission.find({ 
 				$or: [
 					{ controller: 'project' },
 					{ controller: 'client' },
-					{ controller: 'design' }
+					{ controller: 'design' },
+					{ controller: 'lead' },
+					{ controller: 'estimate' },
+					{ controller: 'moodboard' }
 				],
 				action: { $ne: 'delete' }
 			});
@@ -134,15 +209,29 @@ async function initialData() {
 				$or: [
 					{ controller: 'project', action: 'read' },
 					{ controller: 'client', action: 'read' },
-					{ controller: 'design', action: 'read' }
+					{ controller: 'design', action: 'read' },
+					{ controller: 'lead', action: 'read' },
+					{ controller: 'estimate', action: 'read' },
+					{ controller: 'moodboard', action: 'read' }
+				]
+			});
+			const teamManagementPermissions = await Permission.find({ 
+				$or: [
+					{ controller: 'team' },
+					{ controller: 'user' }
 				]
 			});
 			
 			await Role.create(
 				{
 					name: 'Studio Owner',
-					description: 'Full access to all features including financial management and user administration',
+					description: 'Full access to all features including financial management, user administration, and team management',
 					permissions: allPermissions
+				},
+				{
+					name: 'Team Manager',
+					description: 'Can manage teams, projects, clients, and designs. Full access to team operations',
+					permissions: [...projectPermissions, ...teamManagementPermissions]
 				},
 				{
 					name: 'Senior Designer',

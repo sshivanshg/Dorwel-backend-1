@@ -13,6 +13,9 @@ router.post('/openai', catchAsync(webhookService.handleOpenAIWebhook.bind(webhoo
 // Google OAuth webhooks
 router.post('/google', catchAsync(webhookService.handleGoogleWebhook.bind(webhookService)));
 
+// Razorpay webhooks
+router.post('/razorpay', catchAsync(webhookService.handleRazorpayWebhook.bind(webhookService)));
+
 // Generic webhook handler
 router.post('/generic', catchAsync(webhookService.handleGenericWebhook.bind(webhookService)));
 

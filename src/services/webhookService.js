@@ -1,6 +1,7 @@
 import crypto from 'crypto';
 import config from '~/config/config';
 import logger from '~/config/logger';
+import razorpayWebhookService from './razorpayWebhookService';
 import messagingService from './messagingService';
 import aiService from './aiService';
 import pdfService from './pdfService';
@@ -201,6 +202,9 @@ class WebhookService {
 				case 'google':
 					await this.handleGoogleWebhook(req, res);
 					break;
+				case 'razorpay':
+					await this.handleRazorpayWebhook(req, res);
+					break;
 				default:
 					logger.warn(`Unknown webhook service: ${service}`);
 					res.status(400).json({ error: 'Unknown service' });
@@ -208,6 +212,43 @@ class WebhookService {
 		} catch (error) {
 			logger.error('Generic webhook error:', error);
 			res.status(500).json({ error: 'Internal server error' });
+		}
+	}
+
+	async handleRazorpayWebhook(req, res) {
+		try {
+			const signature = req.headers['x-razorpay-signature'];
+			const body = JSON.stringify(req.body);
+
+			// Verify webhook signature
+			if (!this.verifyRazorpaySignature(body, signature)) {
+				logger.warn('Invalid Razorpay webhook signature');
+				return res.status(401).json({ error: 'Unauthorized' });
+			}
+
+			const { event, contains } = req.body;
+
+			// Process webhook
+			await razorpayWebhookService.handleWebhook(event, req.body);
+
+			res.status(200).json({ success: true });
+		} catch (error) {
+			logger.error('Razorpay webhook error:', error);
+			res.status(500).json({ error: 'Internal server error' });
+		}
+	}
+
+	verifyRazorpaySignature(body, signature) {
+		try {
+			const expectedSignature = crypto
+				.createHmac('sha256', config.RAZORPAY_WEBHOOK_SECRET)
+				.update(body)
+				.digest('hex');
+
+			return expectedSignature === signature;
+		} catch (error) {
+			logger.error('Error verifying Razorpay webhook signature:', error);
+			return false;
 		}
 	}
 

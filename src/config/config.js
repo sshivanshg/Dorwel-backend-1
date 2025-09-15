@@ -59,7 +59,17 @@ const envValidate = Joi.object()
 
 		// JWT Refresh Token
 		JWT_REFRESH_TOKEN_SECRET: Joi.string().allow('').empty(''),
-		JWT_REFRESH_TOKEN_EXPIRATION_DAYS: Joi.number().allow('').empty('').default(7)
+		JWT_REFRESH_TOKEN_EXPIRATION_DAYS: Joi.number().allow('').empty('').default(7),
+
+		// Webhook Secrets
+		TWILIO_WEBHOOK_SECRET: Joi.string().allow('').empty(''),
+		OPENAI_WEBHOOK_SECRET: Joi.string().allow('').empty(''),
+		GOOGLE_WEBHOOK_SECRET: Joi.string().allow('').empty(''),
+
+		// Razorpay Configuration
+		RAZORPAY_KEY_ID: Joi.string().allow('').empty(''),
+		RAZORPAY_KEY_SECRET: Joi.string().allow('').empty(''),
+		RAZORPAY_WEBHOOK_SECRET: Joi.string().allow('').empty('')
 	})
 	.unknown();
 
@@ -132,6 +142,16 @@ export default {
 	// JWT Refresh Token
 	JWT_REFRESH_TOKEN_SECRET: env.JWT_REFRESH_TOKEN_SECRET,
 	JWT_REFRESH_TOKEN_EXPIRATION_DAYS: env.JWT_REFRESH_TOKEN_EXPIRATION_DAYS,
+
+	// Webhook Secrets
+	TWILIO_WEBHOOK_SECRET: env.TWILIO_WEBHOOK_SECRET,
+	OPENAI_WEBHOOK_SECRET: env.OPENAI_WEBHOOK_SECRET,
+	GOOGLE_WEBHOOK_SECRET: env.GOOGLE_WEBHOOK_SECRET,
+
+	// Razorpay Configuration
+	RAZORPAY_KEY_ID: env.RAZORPAY_KEY_ID,
+	RAZORPAY_KEY_SECRET: env.RAZORPAY_KEY_SECRET,
+	RAZORPAY_WEBHOOK_SECRET: env.RAZORPAY_WEBHOOK_SECRET,
 
 	TOKEN_TYPES: {
 		REFRESH: 'refresh',
