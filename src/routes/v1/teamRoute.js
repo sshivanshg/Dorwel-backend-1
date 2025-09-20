@@ -33,3 +33,6 @@ router.get('/user/:userId/teams', teamController.getUserTeams);
 router.get('/:teamId/permissions/check', teamController.checkUserPermission);
 
 export default router;
+
+
+

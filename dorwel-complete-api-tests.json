@@ -1,0 +1,1842 @@
+{
+  "info": {
+    "name": "Dorwel Backend - Complete API Tests",
+    "description": "Comprehensive test collection for all Dorwel backend endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [{"key": "token", "value": "{{accessToken}}", "type": "string"}]
+  },
+  "variable": [
+    {"key": "baseUrl", "value": "http://localhost:666/api/v1", "type": "string"},
+    {"key": "accessToken", "value": "", "type": "string"},
+    {"key": "refreshToken", "value": "", "type": "string"},
+    {"key": "userId", "value": "", "type": "string"},
+    {"key": "roleId", "value": "", "type": "string"},
+    {"key": "teamId", "value": "", "type": "string"},
+    {"key": "planId", "value": "", "type": "string"},
+    {"key": "subscriptionId", "value": "", "type": "string"},
+    {"key": "leadId", "value": "", "type": "string"},
+    {"key": "clientId", "value": "", "type": "string"},
+    {"key": "projectId", "value": "", "type": "string"},
+    {"key": "estimateId", "value": "", "type": "string"},
+    {"key": "moodboardId", "value": "", "type": "string"}
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "User Signup",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"userName\": \"johndoe123\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/auth/signup", "host": ["{{baseUrl}}"], "path": ["auth", "signup"]}
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "if (pm.response.code === 200) {",
+                "    const response = pm.response.json();",
+                "    if (response.success && response.data.tokens) {",
+                "        pm.collectionVariables.set('accessToken', response.data.tokens.access.token);",
+                "        pm.collectionVariables.set('refreshToken', response.data.tokens.refresh.token);",
+                "        pm.collectionVariables.set('userId', response.data.user.id);",
+                "    }",
+                "}"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "User Signin",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userName\": \"johndoe123\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/auth/signin", "host": ["{{baseUrl}}"], "path": ["auth", "signin"]}
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "if (pm.response.code === 200) {",
+                "    const response = pm.response.json();",
+                "    if (response.success && response.data.tokens) {",
+                "        pm.collectionVariables.set('accessToken', response.data.tokens.access.token);",
+                "        pm.collectionVariables.set('refreshToken', response.data.tokens.refresh.token);",
+                "        pm.collectionVariables.set('userId', response.data.user.id);",
+                "    }",
+                "}"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/auth/current", "host": ["{{baseUrl}}"], "path": ["auth", "current"]}
+          }
+        },
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"]}
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"John Updated\",\n  \"lastName\": \"Doe Updated\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"]}
+          }
+        },
+        {
+          "name": "Refresh Tokens",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"},
+            "url": {"raw": "{{baseUrl}}/auth/refresh-tokens", "host": ["{{baseUrl}}"], "path": ["auth", "refresh-tokens"]}
+          }
+        },
+        {
+          "name": "Send Verification Email",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/auth/send-verification-email", "host": ["{{baseUrl}}"], "path": ["auth", "send-verification-email"]}
+          }
+        },
+        {
+          "name": "Verify Email",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {"raw": "{{baseUrl}}/auth/verify-email?token=VERIFICATION_TOKEN_HERE", "host": ["{{baseUrl}}"], "path": ["auth", "verify-email"], "query": [{"key": "token", "value": "VERIFICATION_TOKEN_HERE"}]}
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"email\": \"john.doe@example.com\"\n}"},
+            "url": {"raw": "{{baseUrl}}/auth/forgot-password", "host": ["{{baseUrl}}"], "path": ["auth", "forgot-password"]}
+          }
+        },
+        {
+          "name": "Reset Password",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"password\": \"newpassword123\"\n}"},
+            "url": {"raw": "{{baseUrl}}/auth/reset-password?token=RESET_TOKEN_HERE", "host": ["{{baseUrl}}"], "path": ["auth", "reset-password"], "query": [{"key": "token", "value": "RESET_TOKEN_HERE"}]}
+          }
+        },
+        {
+          "name": "Signout",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {"mode": "raw", "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"},
+            "url": {"raw": "{{baseUrl}}/auth/signout", "host": ["{{baseUrl}}"], "path": ["auth", "signout"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/users?limit=10&page=1", "host": ["{{baseUrl}}"], "path": ["users"], "query": [{"key": "limit", "value": "10"}, {"key": "page", "value": "1"}]}
+          }
+        },
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Smith\",\n  \"userName\": \"janesmith123\",\n  \"email\": \"jane.smith@example.com\",\n  \"password\": \"password123\",\n  \"roles\": [\"{{roleId}}\"]\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/users", "host": ["{{baseUrl}}"], "path": ["users"]}
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/users/{{userId}}", "host": ["{{baseUrl}}"], "path": ["users", "{{userId}}"]}
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Jane Updated\",\n  \"lastName\": \"Smith Updated\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/users/{{userId}}", "host": ["{{baseUrl}}"], "path": ["users", "{{userId}}"]}
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/users/{{userId}}", "host": ["{{baseUrl}}"], "path": ["users", "{{userId}}"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Role Management",
+      "item": [
+        {
+          "name": "Get All Roles",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/roles", "host": ["{{baseUrl}}"], "path": ["roles"]}
+          }
+        },
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Junior Designer\",\n  \"description\": \"Entry-level designer role\",\n  \"permissions\": []\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/roles", "host": ["{{baseUrl}}"], "path": ["roles"]}
+          }
+        },
+        {
+          "name": "Get Role by ID",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/roles/{{roleId}}", "host": ["{{baseUrl}}"], "path": ["roles", "{{roleId}}"]}
+          }
+        },
+        {
+          "name": "Update Role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Senior Designer\",\n  \"description\": \"Senior designer role\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/roles/{{roleId}}", "host": ["{{baseUrl}}"], "path": ["roles", "{{roleId}}"]}
+          }
+        },
+        {
+          "name": "Delete Role",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/roles/{{roleId}}", "host": ["{{baseUrl}}"], "path": ["roles", "{{roleId}}"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Team Management",
+      "item": [
+        {
+          "name": "Create Team",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Design Team Alpha\",\n  \"description\": \"Primary design team\",\n  \"teamType\": \"design\",\n  \"status\": \"active\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/teams", "host": ["{{baseUrl}}"], "path": ["teams"]}
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "if (pm.response.code === 201) {",
+                "    const response = pm.response.json();",
+                "    if (response.success && response.data.id) {",
+                "        pm.collectionVariables.set('teamId', response.data.id);",
+                "    }",
+                "}"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Get All Teams",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/teams", "host": ["{{baseUrl}}"], "path": ["teams"]}
+          }
+        },
+        {
+          "name": "Get Team by ID",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/teams/{{teamId}}", "host": ["{{baseUrl}}"], "path": ["teams", "{{teamId}}"]}
+          }
+        },
+        {
+          "name": "Update Team",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Design Team Alpha Updated\",\n  \"description\": \"Updated team description\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/teams/{{teamId}}", "host": ["{{baseUrl}}"], "path": ["teams", "{{teamId}}"]}
+          }
+        },
+        {
+          "name": "Delete Team",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/teams/{{teamId}}", "host": ["{{baseUrl}}"], "path": ["teams", "{{teamId}}"]}
+          }
+        },
+        {
+          "name": "Get Team Stats",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/teams/stats", "host": ["{{baseUrl}}"], "path": ["teams", "stats"]}
+          }
+        },
+        {
+          "name": "Search Teams",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/teams/search?q=design&limit=5", "host": ["{{baseUrl}}"], "path": ["teams", "search"], "query": [{"key": "q", "value": "design"}, {"key": "limit", "value": "5"}]}
+          }
+        },
+        {
+          "name": "Get My Teams",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/teams/my-teams", "host": ["{{baseUrl}}"], "path": ["teams", "my-teams"]}
+          }
+        },
+        {
+          "name": "Get Teams by Type",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/teams/type/design", "host": ["{{baseUrl}}"], "path": ["teams", "type", "design"]}
+          }
+        },
+        {
+          "name": "Add Team Member",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"role\": \"member\"\n}"},
+            "url": {"raw": "{{baseUrl}}/teams/{{teamId}}/members", "host": ["{{baseUrl}}"], "path": ["teams", "{{teamId}}", "members"]}
+          }
+        },
+        {
+          "name": "Remove Team Member",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"userId\": \"{{userId}}\"\n}"},
+            "url": {"raw": "{{baseUrl}}/teams/{{teamId}}/members", "host": ["{{baseUrl}}"], "path": ["teams", "{{teamId}}", "members"]}
+          }
+        },
+        {
+          "name": "Update Member Role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"userId\": \"{{userId}}\",\n  \"role\": \"senior_member\"\n}"},
+            "url": {"raw": "{{baseUrl}}/teams/{{teamId}}/members/role", "host": ["{{baseUrl}}"], "path": ["teams", "{{teamId}}", "members", "role"]}
+          }
+        },
+        {
+          "name": "Get User Teams",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/teams/user/{{userId}}/teams", "host": ["{{baseUrl}}"], "path": ["teams", "user", "{{userId}}", "teams"]}
+          }
+        },
+        {
+          "name": "Check User Permission",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/teams/{{teamId}}/permissions/check?userId={{userId}}&action=read", "host": ["{{baseUrl}}"], "path": ["teams", "{{teamId}}", "permissions", "check"], "query": [{"key": "userId", "value": "{{userId}}"}, {"key": "action", "value": "read"}]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lead Management",
+      "item": [
+        {
+          "name": "Create Lead",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Alice\",\n  \"lastName\": \"Johnson\",\n  \"email\": \"alice.johnson@example.com\",\n  \"phone\": \"+1234567890\",\n  \"projectType\": \"residential\",\n  \"projectSize\": \"medium\",\n  \"budget\": 50000,\n  \"location\": {\n    \"address\": \"123 Main St\",\n    \"city\": \"New York\",\n    \"state\": \"NY\",\n    \"zipCode\": \"10001\",\n    \"country\": \"US\"\n  },\n  \"projectDescription\": \"Complete home renovation\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/leads", "host": ["{{baseUrl}}"], "path": ["leads"]}
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "if (pm.response.code === 201) {",
+                "    const response = pm.response.json();",
+                "    if (response.success && response.data.id) {",
+                "        pm.collectionVariables.set('leadId', response.data.id);",
+                "    }",
+                "}"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Get All Leads",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/leads", "host": ["{{baseUrl}}"], "path": ["leads"]}
+          }
+        },
+        {
+          "name": "Update Lead Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"status\": \"contacted\"\n}"},
+            "url": {"raw": "{{baseUrl}}/leads/{{leadId}}/status", "host": ["{{baseUrl}}"], "path": ["leads", "{{leadId}}", "status"]}
+          }
+        },
+        {
+          "name": "Get Lead by ID",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/leads/{{leadId}}", "host": ["{{baseUrl}}"], "path": ["leads", "{{leadId}}"]}
+          }
+        },
+        {
+          "name": "Update Lead",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"budget\": 60000,\n  \"priority\": \"high\"\n}"},
+            "url": {"raw": "{{baseUrl}}/leads/{{leadId}}", "host": ["{{baseUrl}}"], "path": ["leads", "{{leadId}}"]}
+          }
+        },
+        {
+          "name": "Add Lead Note",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"content\": \"Client is very interested in modern design\"\n}"},
+            "url": {"raw": "{{baseUrl}}/leads/{{leadId}}/notes", "host": ["{{baseUrl}}"], "path": ["leads", "{{leadId}}", "notes"]}
+          }
+        },
+        {
+          "name": "Convert Lead to Client",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/leads/{{leadId}}/convert-to-client", "host": ["{{baseUrl}}"], "path": ["leads", "{{leadId}}", "convert-to-client"]}
+          }
+        },
+        {
+          "name": "Convert Lead to Project",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectData\": {\n    \"name\": \"Kitchen Renovation Project\",\n    \"description\": \"Complete kitchen makeover\",\n    \"projectType\": \"residential\",\n    \"projectSize\": \"medium\",\n    \"startDate\": \"2024-02-01T00:00:00.000Z\",\n    \"estimatedDuration\": 60,\n    \"budget\": {\n      \"estimated\": 50000,\n      \"currency\": \"USD\"\n    },\n    \"location\": {\n      \"address\": \"123 Main St\",\n      \"city\": \"New York\",\n      \"state\": \"NY\",\n      \"zipCode\": \"10001\",\n      \"country\": \"US\"\n    }\n  }\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/leads/{{leadId}}/convert-to-project", "host": ["{{baseUrl}}"], "path": ["leads", "{{leadId}}", "convert-to-project"]}
+          }
+        },
+        {
+          "name": "Send Lead Follow-up",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"followUpType\": \"initial_contact\",\n  \"message\": \"Thank you for your interest in our services\",\n  \"sendVia\": \"email\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/leads/{{leadId}}/follow-up", "host": ["{{baseUrl}}"], "path": ["leads", "{{leadId}}", "follow-up"]}
+          }
+        },
+        {
+          "name": "Generate AI Estimate for Lead",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/leads/{{leadId}}/generate-ai-estimate", "host": ["{{baseUrl}}"], "path": ["leads", "{{leadId}}", "generate-ai-estimate"]}
+          }
+        },
+        {
+          "name": "Get Lead Stats",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/leads/stats", "host": ["{{baseUrl}}"], "path": ["leads", "stats"]}
+          }
+        },
+        {
+          "name": "Search Leads",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/leads/search?q=kitchen&limit=5", "host": ["{{baseUrl}}"], "path": ["leads", "search"], "query": [{"key": "q", "value": "kitchen"}, {"key": "limit", "value": "5"}]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Client Management",
+      "item": [
+        {
+          "name": "Create Client",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Bob\",\n  \"lastName\": \"Wilson\",\n  \"email\": \"bob.wilson@example.com\",\n  \"phone\": \"+1987654321\",\n  \"company\": \"Wilson Design Co\",\n  \"address\": \"456 Oak Ave\",\n  \"city\": \"Los Angeles\",\n  \"state\": \"CA\",\n  \"zipCode\": \"90210\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/clients", "host": ["{{baseUrl}}"], "path": ["clients"]}
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "if (pm.response.code === 201) {",
+                "    const response = pm.response.json();",
+                "    if (response.success && response.data.id) {",
+                "        pm.collectionVariables.set('clientId', response.data.id);",
+                "    }",
+                "}"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Get All Clients",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/clients", "host": ["{{baseUrl}}"], "path": ["clients"]}
+          }
+        },
+        {
+          "name": "Get Client by ID",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/clients/{{clientId}}", "host": ["{{baseUrl}}"], "path": ["clients", "{{clientId}}"]}
+          }
+        },
+        {
+          "name": "Update Client",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"company\": \"Wilson Design Co Updated\",\n  \"phone\": \"+1555123456\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/clients/{{clientId}}", "host": ["{{baseUrl}}"], "path": ["clients", "{{clientId}}"]}
+          }
+        },
+        {
+          "name": "Delete Client",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/clients/{{clientId}}", "host": ["{{baseUrl}}"], "path": ["clients", "{{clientId}}"]}
+          }
+        },
+        {
+          "name": "Update Client Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"status\": \"active\"\n}"},
+            "url": {"raw": "{{baseUrl}}/clients/{{clientId}}/status", "host": ["{{baseUrl}}"], "path": ["clients", "{{clientId}}", "status"]}
+          }
+        },
+        {
+          "name": "Add Client Note",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"content\": \"Client prefers modern minimalist design\"\n}"},
+            "url": {"raw": "{{baseUrl}}/clients/{{clientId}}/notes", "host": ["{{baseUrl}}"], "path": ["clients", "{{clientId}}", "notes"]}
+          }
+        },
+        {
+          "name": "Get Client Projects",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/clients/{{clientId}}/projects", "host": ["{{baseUrl}}"], "path": ["clients", "{{clientId}}", "projects"]}
+          }
+        },
+        {
+          "name": "Get Client Timeline",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/clients/{{clientId}}/timeline", "host": ["{{baseUrl}}"], "path": ["clients", "{{clientId}}", "timeline"]}
+          }
+        },
+        {
+          "name": "Send Message to Client",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"subject\": \"Project Update\",\n  \"message\": \"Your project is progressing well\",\n  \"sendVia\": \"email\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/clients/{{clientId}}/send-message", "host": ["{{baseUrl}}"], "path": ["clients", "{{clientId}}", "send-message"]}
+          }
+        },
+        {
+          "name": "Schedule Client Appointment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Design Review Meeting\",\n  \"description\": \"Review initial design concepts\",\n  \"scheduledDate\": \"2024-02-15T10:00:00.000Z\",\n  \"duration\": 60\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/clients/{{clientId}}/schedule-appointment", "host": ["{{baseUrl}}"], "path": ["clients", "{{clientId}}", "schedule-appointment"]}
+          }
+        },
+        {
+          "name": "Get Client Stats",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/clients/stats", "host": ["{{baseUrl}}"], "path": ["clients", "stats"]}
+          }
+        },
+        {
+          "name": "Search Clients",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/clients/search?q=wilson&limit=5", "host": ["{{baseUrl}}"], "path": ["clients", "search"], "query": [{"key": "q", "value": "wilson"}, {"key": "limit", "value": "5"}]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Project Management",
+      "item": [
+        {
+          "name": "Create Project",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Modern Kitchen Renovation\",\n  \"description\": \"Complete kitchen makeover with modern appliances\",\n  \"projectType\": \"residential\",\n  \"projectSize\": \"medium\",\n  \"status\": \"planning\",\n  \"startDate\": \"2024-02-01T00:00:00.000Z\",\n  \"estimatedEndDate\": \"2024-04-01T00:00:00.000Z\",\n  \"budget\": 75000,\n  \"client\": \"{{clientId}}\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/projects", "host": ["{{baseUrl}}"], "path": ["projects"]}
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "if (pm.response.code === 201) {",
+                "    const response = pm.response.json();",
+                "    if (response.success && response.data.id) {",
+                "        pm.collectionVariables.set('projectId', response.data.id);",
+                "    }",
+                "}"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Get All Projects",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/projects", "host": ["{{baseUrl}}"], "path": ["projects"]}
+          }
+        },
+        {
+          "name": "Get Project by ID",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/projects/{{projectId}}", "host": ["{{baseUrl}}"], "path": ["projects", "{{projectId}}"]}
+          }
+        },
+        {
+          "name": "Update Project",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Modern Kitchen Renovation Updated\",\n  \"budget\": 80000\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/projects/{{projectId}}", "host": ["{{baseUrl}}"], "path": ["projects", "{{projectId}}"]}
+          }
+        },
+        {
+          "name": "Delete Project",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/projects/{{projectId}}", "host": ["{{baseUrl}}"], "path": ["projects", "{{projectId}}"]}
+          }
+        },
+        {
+          "name": "Update Project Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"status\": \"in_progress\"\n}"},
+            "url": {"raw": "{{baseUrl}}/projects/{{projectId}}/status", "host": ["{{baseUrl}}"], "path": ["projects", "{{projectId}}", "status"]}
+          }
+        },
+        {
+          "name": "Update Project Progress",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"progress\": 25\n}"},
+            "url": {"raw": "{{baseUrl}}/projects/{{projectId}}/progress", "host": ["{{baseUrl}}"], "path": ["projects", "{{projectId}}", "progress"]}
+          }
+        },
+        {
+          "name": "Add Project Milestone",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Design Approval\",\n  \"description\": \"Client approval of initial design\",\n  \"dueDate\": \"2024-02-20T00:00:00.000Z\",\n  \"status\": \"pending\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/projects/{{projectId}}/milestones", "host": ["{{baseUrl}}"], "path": ["projects", "{{projectId}}", "milestones"]}
+          }
+        },
+        {
+          "name": "Add Project Note",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"content\": \"Client requested additional storage space\"\n}"},
+            "url": {"raw": "{{baseUrl}}/projects/{{projectId}}/notes", "host": ["{{baseUrl}}"], "path": ["projects", "{{projectId}}", "notes"]}
+          }
+        },
+        {
+          "name": "Add Project Document",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Floor Plan\",\n  \"description\": \"Initial floor plan design\",\n  \"fileUrl\": \"/documents/floor-plan.pdf\",\n  \"type\": \"design\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/projects/{{projectId}}/documents", "host": ["{{baseUrl}}"], "path": ["projects", "{{projectId}}", "documents"]}
+          }
+        },
+        {
+          "name": "Generate Project Report",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/projects/{{projectId}}/generate-report", "host": ["{{baseUrl}}"], "path": ["projects", "{{projectId}}", "generate-report"]}
+          }
+        },
+        {
+          "name": "Get Project Stats",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/projects/stats", "host": ["{{baseUrl}}"], "path": ["projects", "stats"]}
+          }
+        },
+        {
+          "name": "Search Projects",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/projects/search?q=kitchen&limit=5", "host": ["{{baseUrl}}"], "path": ["projects", "search"], "query": [{"key": "q", "value": "kitchen"}, {"key": "limit", "value": "5"}]}
+          }
+        },
+        {
+          "name": "Get Client Projects",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/projects/client/{{clientId}}", "host": ["{{baseUrl}}"], "path": ["projects", "client", "{{clientId}}"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Estimate Management",
+      "item": [
+        {
+          "name": "Create Estimate",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectId\": \"{{projectId}}\",\n  \"clientId\": \"{{clientId}}\",\n  \"title\": \"Kitchen Renovation Estimate\",\n  \"items\": [\n    {\n      \"description\": \"Cabinets and hardware\",\n      \"quantity\": 1,\n      \"unitPrice\": 25000,\n      \"totalPrice\": 25000\n    }\n  ],\n  \"subtotal\": 25000,\n  \"taxRate\": 8.5,\n  \"taxAmount\": 2125,\n  \"totalAmount\": 27125\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/estimates", "host": ["{{baseUrl}}"], "path": ["estimates"]}
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "if (pm.response.code === 201) {",
+                "    const response = pm.response.json();",
+                "    if (response.success && response.data.id) {",
+                "        pm.collectionVariables.set('estimateId', response.data.id);",
+                "    }",
+                "}"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Get All Estimates",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/estimates", "host": ["{{baseUrl}}"], "path": ["estimates"]}
+          }
+        },
+        {
+          "name": "Generate AI Estimate",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"projectDescription\": \"Modern kitchen renovation with quartz countertops\",\n  \"projectSize\": \"medium\",\n  \"location\": \"New York\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/estimates/generate-ai", "host": ["{{baseUrl}}"], "path": ["estimates", "generate-ai"]}
+          }
+        },
+        {
+          "name": "Get Estimate by ID",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/estimates/{{estimateId}}", "host": ["{{baseUrl}}"], "path": ["estimates", "{{estimateId}}"]}
+          }
+        },
+        {
+          "name": "Update Estimate",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Kitchen Renovation Estimate\",\n  \"totalAmount\": 30000\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/estimates/{{estimateId}}", "host": ["{{baseUrl}}"], "path": ["estimates", "{{estimateId}}"]}
+          }
+        },
+        {
+          "name": "Delete Estimate",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/estimates/{{estimateId}}", "host": ["{{baseUrl}}"], "path": ["estimates", "{{estimateId}}"]}
+          }
+        },
+        {
+          "name": "Update Estimate Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"status\": \"approved\"\n}"},
+            "url": {"raw": "{{baseUrl}}/estimates/{{estimateId}}/status", "host": ["{{baseUrl}}"], "path": ["estimates", "{{estimateId}}", "status"]}
+          }
+        },
+        {
+          "name": "Add Estimate Note",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"content\": \"Client requested premium materials upgrade\"\n}"},
+            "url": {"raw": "{{baseUrl}}/estimates/{{estimateId}}/notes", "host": ["{{baseUrl}}"], "path": ["estimates", "{{estimateId}}", "notes"]}
+          }
+        },
+        {
+          "name": "Create Estimate Revision",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"revisionNumber\": 2,\n  \"changes\": \"Updated cabinet specifications\",\n  \"newTotalAmount\": 32000\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/estimates/{{estimateId}}/revision", "host": ["{{baseUrl}}"], "path": ["estimates", "{{estimateId}}", "revision"]}
+          }
+        },
+        {
+          "name": "Duplicate Estimate",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/estimates/{{estimateId}}/duplicate", "host": ["{{baseUrl}}"], "path": ["estimates", "{{estimateId}}", "duplicate"]}
+          }
+        },
+        {
+          "name": "Send Estimate",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sendTo\": \"client@example.com\",\n  \"subject\": \"Your Kitchen Renovation Estimate\",\n  \"message\": \"Please find attached your estimate\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/estimates/{{estimateId}}/send", "host": ["{{baseUrl}}"], "path": ["estimates", "{{estimateId}}", "send"]}
+          }
+        },
+        {
+          "name": "Generate Estimate PDF",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/estimates/{{estimateId}}/generate-pdf", "host": ["{{baseUrl}}"], "path": ["estimates", "{{estimateId}}", "generate-pdf"]}
+          }
+        },
+        {
+          "name": "Create Estimate from AI",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"aiResponse\": \"Generated estimate data\",\n  \"projectId\": \"{{projectId}}\",\n  \"clientId\": \"{{clientId}}\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/estimates/create-from-ai", "host": ["{{baseUrl}}"], "path": ["estimates", "create-from-ai"]}
+          }
+        },
+        {
+          "name": "Get Estimate Stats",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/estimates/stats", "host": ["{{baseUrl}}"], "path": ["estimates", "stats"]}
+          }
+        },
+        {
+          "name": "Search Estimates",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/estimates/search?q=kitchen&limit=5", "host": ["{{baseUrl}}"], "path": ["estimates", "search"], "query": [{"key": "q", "value": "kitchen"}, {"key": "limit", "value": "5"}]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Moodboard Management",
+      "item": [
+        {
+          "name": "Create Moodboard",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Modern Kitchen Moodboard\",\n  \"description\": \"Inspiration for kitchen renovation\",\n  \"projectId\": \"{{projectId}}\",\n  \"style\": \"modern\",\n  \"colorPalette\": [\"white\", \"gray\", \"black\"],\n  \"content\": {\n    \"images\": [],\n    \"notes\": \"Clean lines and minimalist design\"\n  }\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/moodboards", "host": ["{{baseUrl}}"], "path": ["moodboards"]}
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "if (pm.response.code === 201) {",
+                "    const response = pm.response.json();",
+                "    if (response.success && response.data.id) {",
+                "        pm.collectionVariables.set('moodboardId', response.data.id);",
+                "    }",
+                "}"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Get All Moodboards",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/moodboards", "host": ["{{baseUrl}}"], "path": ["moodboards"]}
+          }
+        },
+        {
+          "name": "Update Moodboard Content",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": {\n    \"images\": [\"image1.jpg\", \"image2.jpg\"],\n    \"notes\": \"Updated inspiration with new materials\"\n  }\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/moodboards/{{moodboardId}}/content", "host": ["{{baseUrl}}"], "path": ["moodboards", "{{moodboardId}}", "content"]}
+          }
+        },
+        {
+          "name": "Get Moodboard by ID",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/moodboards/{{moodboardId}}", "host": ["{{baseUrl}}"], "path": ["moodboards", "{{moodboardId}}"]}
+          }
+        },
+        {
+          "name": "Update Moodboard",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Modern Kitchen Moodboard\",\n  \"description\": \"Updated inspiration board\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/moodboards/{{moodboardId}}", "host": ["{{baseUrl}}"], "path": ["moodboards", "{{moodboardId}}"]}
+          }
+        },
+        {
+          "name": "Delete Moodboard",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/moodboards/{{moodboardId}}", "host": ["{{baseUrl}}"], "path": ["moodboards", "{{moodboardId}}"]}
+          }
+        },
+        {
+          "name": "Update Moodboard Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"status\": \"shared\"\n}"},
+            "url": {"raw": "{{baseUrl}}/moodboards/{{moodboardId}}/status", "host": ["{{baseUrl}}"], "path": ["moodboards", "{{moodboardId}}", "status"]}
+          }
+        },
+        {
+          "name": "Generate Share Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"expiresIn\": 7,\n  \"allowComments\": true\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/moodboards/{{moodboardId}}/share-token", "host": ["{{baseUrl}}"], "path": ["moodboards", "{{moodboardId}}", "share-token"]}
+          }
+        },
+        {
+          "name": "Add Moodboard Item",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"image\",\n  \"url\": \"https://example.com/kitchen-image.jpg\",\n  \"title\": \"Modern Kitchen Inspiration\",\n  \"description\": \"Clean lines and minimalist design\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/moodboards/{{moodboardId}}/items", "host": ["{{baseUrl}}"], "path": ["moodboards", "{{moodboardId}}", "items"]}
+          }
+        },
+        {
+          "name": "Add Moodboard Comment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"content\": \"Love this color scheme!\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/moodboards/{{moodboardId}}/comments", "host": ["{{baseUrl}}"], "path": ["moodboards", "{{moodboardId}}", "comments"]}
+          }
+        },
+        {
+          "name": "Duplicate Moodboard",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/moodboards/{{moodboardId}}/duplicate", "host": ["{{baseUrl}}"], "path": ["moodboards", "{{moodboardId}}", "duplicate"]}
+          }
+        },
+        {
+          "name": "Create Moodboard from AI",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"prompt\": \"Modern kitchen with white cabinets and marble countertops\",\n  \"projectId\": \"{{projectId}}\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/moodboards/create-from-ai", "host": ["{{baseUrl}}"], "path": ["moodboards", "create-from-ai"]}
+          }
+        },
+        {
+          "name": "Generate AI Suggestions",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"style\": \"modern\",\n  \"roomType\": \"kitchen\",\n  \"colorPreference\": \"neutral\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/moodboards/generate-ai-suggestions", "host": ["{{baseUrl}}"], "path": ["moodboards", "generate-ai-suggestions"]}
+          }
+        },
+        {
+          "name": "Get Moodboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/moodboards/stats", "host": ["{{baseUrl}}"], "path": ["moodboards", "stats"]}
+          }
+        },
+        {
+          "name": "Search Moodboards",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/moodboards/search?q=kitchen&limit=5", "host": ["{{baseUrl}}"], "path": ["moodboards", "search"], "query": [{"key": "q", "value": "kitchen"}, {"key": "limit", "value": "5"}]}
+          }
+        },
+        {
+          "name": "Get Project Moodboards",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/moodboards/project/{{projectId}}", "host": ["{{baseUrl}}"], "path": ["moodboards", "project", "{{projectId}}"]}
+          }
+        },
+        {
+          "name": "Get Client Moodboards",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/moodboards/client/{{clientId}}", "host": ["{{baseUrl}}"], "path": ["moodboards", "client", "{{clientId}}"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Subscription & Payment",
+      "item": [
+        {
+          "name": "Create Plan",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Professional Plan\",\n  \"description\": \"For professional designers\",\n  \"price\": 99.99,\n  \"currency\": \"USD\",\n  \"billingCycle\": \"monthly\",\n  \"features\": [\"Unlimited projects\", \"Team collaboration\"],\n  \"isActive\": true\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/subscriptions/plans", "host": ["{{baseUrl}}"], "path": ["subscriptions", "plans"]}
+          },
+          "event": [{
+            "listen": "test",
+            "script": {
+              "exec": [
+                "if (pm.response.code === 201) {",
+                "    const response = pm.response.json();",
+                "    if (response.success && response.data.id) {",
+                "        pm.collectionVariables.set('planId', response.data.id);",
+                "    }",
+                "}"
+              ]
+            }
+          }]
+        },
+        {
+          "name": "Get Plans",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/subscriptions/plans", "host": ["{{baseUrl}}"], "path": ["subscriptions", "plans"]}
+          }
+        },
+        {
+          "name": "Create Subscription",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"planId\": \"{{planId}}\",\n  \"billingCycle\": \"monthly\"\n}"},
+            "url": {"raw": "{{baseUrl}}/subscriptions/subscribe", "host": ["{{baseUrl}}"], "path": ["subscriptions", "subscribe"]}
+          }
+        },
+        {
+          "name": "Create Payment Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"planId\": \"{{planId}}\",\n  \"amount\": 99.99,\n  \"currency\": \"USD\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/subscriptions/payment/order", "host": ["{{baseUrl}}"], "path": ["subscriptions", "payment", "order"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "item": [
+        {
+          "name": "Get Notifications",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/notifications", "host": ["{{baseUrl}}"], "path": ["notifications"]}
+          }
+        },
+        {
+          "name": "Get Unread Count",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/notifications/unread-count", "host": ["{{baseUrl}}"], "path": ["notifications", "unread-count"]}
+          }
+        },
+        {
+          "name": "Mark All as Read",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/notifications/mark-all-read", "host": ["{{baseUrl}}"], "path": ["notifications", "mark-all-read"]}
+          }
+        },
+        {
+          "name": "Get Notification Stats",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/notifications/stats", "host": ["{{baseUrl}}"], "path": ["notifications", "stats"]}
+          }
+        },
+        {
+          "name": "Get Recent Notifications",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/notifications/recent", "host": ["{{baseUrl}}"], "path": ["notifications", "recent"]}
+          }
+        },
+        {
+          "name": "Get Notifications by Type",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/notifications/type/project", "host": ["{{baseUrl}}"], "path": ["notifications", "type", "project"]}
+          }
+        },
+        {
+          "name": "Get Notifications by Status",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/notifications/status/unread", "host": ["{{baseUrl}}"], "path": ["notifications", "status", "unread"]}
+          }
+        },
+        {
+          "name": "Create Notification",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"New Project Assigned\",\n  \"message\": \"You have been assigned to a new project\",\n  \"type\": \"project\",\n  \"priority\": \"medium\",\n  \"userId\": \"{{userId}}\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/notifications", "host": ["{{baseUrl}}"], "path": ["notifications"]}
+          }
+        },
+        {
+          "name": "Create Bulk Notifications",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notifications\": [\n    {\n      \"title\": \"Team Update\",\n      \"message\": \"Team meeting scheduled\",\n      \"type\": \"team\",\n      \"userId\": \"{{userId}}\"\n    }\n  ]\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/notifications/bulk", "host": ["{{baseUrl}}"], "path": ["notifications", "bulk"]}
+          }
+        },
+        {
+          "name": "Mark Notification as Read",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/notifications/notificationId/read", "host": ["{{baseUrl}}"], "path": ["notifications", "notificationId", "read"]}
+          }
+        },
+        {
+          "name": "Archive Notification",
+          "request": {
+            "method": "PATCH",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/notifications/notificationId/archive", "host": ["{{baseUrl}}"], "path": ["notifications", "notificationId", "archive"]}
+          }
+        },
+        {
+          "name": "Mark Multiple as Read",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notificationIds\": [\"notificationId1\", \"notificationId2\"]\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/notifications/mark-multiple-read", "host": ["{{baseUrl}}"], "path": ["notifications", "mark-multiple-read"]}
+          }
+        },
+        {
+          "name": "Archive Multiple Notifications",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"notificationIds\": [\"notificationId1\", \"notificationId2\"]\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/notifications/archive-multiple", "host": ["{{baseUrl}}"], "path": ["notifications", "archive-multiple"]}
+          }
+        },
+        {
+          "name": "Cleanup Expired Notifications",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/notifications/cleanup-expired", "host": ["{{baseUrl}}"], "path": ["notifications", "cleanup-expired"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Service Status & Webhooks",
+      "item": [
+        {
+          "name": "Get Service Status",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/services/status", "host": ["{{baseUrl}}"], "path": ["services", "status"]}
+          }
+        },
+        {
+          "name": "Test AI Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"action\": \"generate_suggestions\"\n}"},
+            "url": {"raw": "{{baseUrl}}/services/test/ai", "host": ["{{baseUrl}}"], "path": ["services", "test", "ai"]}
+          }
+        },
+        {
+          "name": "Test Email Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"send_test_email\",\n  \"email\": \"test@example.com\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/services/test/email", "host": ["{{baseUrl}}"], "path": ["services", "test", "email"]}
+          }
+        },
+        {
+          "name": "Webhook Health Check",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/webhooks/health", "host": ["{{baseUrl}}"], "path": ["webhooks", "health"]}
+          }
+        },
+        {
+          "name": "Get Service Health",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/services/health/ai", "host": ["{{baseUrl}}"], "path": ["services", "health", "ai"]}
+          }
+        },
+        {
+          "name": "Get Connected Users",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/services/connected-users", "host": ["{{baseUrl}}"], "path": ["services", "connected-users"]}
+          }
+        },
+        {
+          "name": "Get System Metrics",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/services/metrics", "host": ["{{baseUrl}}"], "path": ["services", "metrics"]}
+          }
+        },
+        {
+          "name": "Test Messaging Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"action\": \"send_test_message\",\n  \"phoneNumber\": \"+1234567890\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/services/test/messaging", "host": ["{{baseUrl}}"], "path": ["services", "test", "messaging"]}
+          }
+        },
+        {
+          "name": "Test Google Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"action\": \"test_oauth\"\n}"},
+            "url": {"raw": "{{baseUrl}}/services/test/google", "host": ["{{baseUrl}}"], "path": ["services", "test", "google"]}
+          }
+        },
+        {
+          "name": "Test Realtime Service",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"action\": \"test_sse_connection\"\n}"},
+            "url": {"raw": "{{baseUrl}}/services/test/realtime", "host": ["{{baseUrl}}"], "path": ["services", "test", "realtime"]}
+          }
+        },
+        {
+          "name": "Run Integration Tests",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/services/integration-test", "host": ["{{baseUrl}}"], "path": ["services", "integration-test"]}
+          }
+        },
+        {
+          "name": "Test Specific Service Integration",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/services/integration-test/ai", "host": ["{{baseUrl}}"], "path": ["services", "integration-test", "ai"]}
+          }
+        },
+        {
+          "name": "Get Integration Test Results",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/services/integration-test/results", "host": ["{{baseUrl}}"], "path": ["services", "integration-test", "results"]}
+          }
+        },
+        {
+          "name": "Clear Integration Test Results",
+          "request": {
+            "method": "DELETE",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/services/integration-test/results", "host": ["{{baseUrl}}"], "path": ["services", "integration-test", "results"]}
+          }
+        },
+        {
+          "name": "Test Twilio Webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "x-twilio-signature", "value": "test_signature"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"MessageSid\": \"SM1234567890\",\n  \"From\": \"+1234567890\",\n  \"To\": \"+0987654321\",\n  \"Body\": \"Test message\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/webhooks/twilio", "host": ["{{baseUrl}}"], "path": ["webhooks", "twilio"]}
+          }
+        },
+        {
+          "name": "Test OpenAI Webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "x-openai-signature", "value": "test_signature"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"chatcmpl-123\",\n  \"object\": \"chat.completion\",\n  \"created\": 1234567890,\n  \"model\": \"gpt-3.5-turbo\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/webhooks/openai", "host": ["{{baseUrl}}"], "path": ["webhooks", "openai"]}
+          }
+        },
+        {
+          "name": "Test Google Webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "x-google-signature", "value": "test_signature"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"event\": \"user.updated\",\n  \"timestamp\": 1234567890,\n  \"data\": {\n    \"userId\": \"123\",\n    \"email\": \"user@example.com\"\n  }\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/webhooks/google", "host": ["{{baseUrl}}"], "path": ["webhooks", "google"]}
+          }
+        },
+        {
+          "name": "Test Razorpay Webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "x-razorpay-signature", "value": "test_signature"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"event\": \"payment.captured\",\n  \"created_at\": 1234567890,\n  \"payload\": {\n    \"payment\": {\n      \"id\": \"pay_test123\",\n      \"amount\": 9999,\n      \"currency\": \"INR\",\n      \"status\": \"captured\"\n    }\n  }\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/webhooks/razorpay", "host": ["{{baseUrl}}"], "path": ["webhooks", "razorpay"]}
+          }
+        },
+        {
+          "name": "Test Generic Webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "x-webhook-signature", "value": "test_signature"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"event\": \"test.event\",\n  \"timestamp\": 1234567890,\n  \"data\": {\n    \"message\": \"Test webhook payload\"\n  }\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/webhooks/generic", "host": ["{{baseUrl}}"], "path": ["webhooks", "generic"]}
+          }
+        },
+        {
+          "name": "Test Webhook Endpoint",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"test\": true,\n  \"message\": \"Test webhook\"\n}"
+            },
+            "url": {"raw": "{{baseUrl}}/webhooks/test", "host": ["{{baseUrl}}"], "path": ["webhooks", "test"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Google OAuth",
+      "item": [
+        {
+          "name": "Get Google Auth URL",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/google/auth/google/url", "host": ["{{baseUrl}}"], "path": ["google", "auth", "google", "url"]}
+          }
+        },
+        {
+          "name": "Check Google OAuth Status",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "url": {"raw": "{{baseUrl}}/google/auth/google/status", "host": ["{{baseUrl}}"], "path": ["google", "auth", "google", "status"]}
+          }
+        },
+        {
+          "name": "Exchange Code for Tokens",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"code\": \"authorization_code_here\"\n}"},
+            "url": {"raw": "{{baseUrl}}/google/auth/google/exchange", "host": ["{{baseUrl}}"], "path": ["google", "auth", "google", "exchange"]}
+          }
+        },
+        {
+          "name": "Refresh Google Access Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"refreshToken\": \"google_refresh_token_here\"\n}"},
+            "url": {"raw": "{{baseUrl}}/google/auth/google/refresh", "host": ["{{baseUrl}}"], "path": ["google", "auth", "google", "refresh"]}
+          }
+        },
+        {
+          "name": "Revoke Google Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{accessToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {"mode": "raw", "raw": "{\n  \"accessToken\": \"google_access_token_here\"\n}"},
+            "url": {"raw": "{{baseUrl}}/google/auth/google/revoke", "host": ["{{baseUrl}}"], "path": ["google", "auth", "google", "revoke"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "Image Upload",
+      "item": [
+        {
+          "name": "Upload Image",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{accessToken}}"}],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {"key": "image", "type": "file", "src": ["/path/to/image.jpg"]}
+              ]
+            },
+            "url": {"raw": "{{baseUrl}}/images/upload", "host": ["{{baseUrl}}"], "path": ["images", "upload"]}
+          }
+        }
+      ]
+    }
+  ]
+}

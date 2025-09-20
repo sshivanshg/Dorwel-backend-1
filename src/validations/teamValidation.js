@@ -124,3 +124,4 @@ export default {
 	getTeamsByType,
 	checkUserPermission
 };
+

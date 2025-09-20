@@ -320,3 +320,4 @@ teamSchema.loadClass(TeamClass);
 const Team = mongoose.model('teams', teamSchema);
 
 export default Team;
+
